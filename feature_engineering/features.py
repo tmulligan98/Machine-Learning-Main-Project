@@ -21,29 +21,32 @@ def load_dataframe():
 
     # Load data from csvs
     path = "/mnt/c/Users/Tom/Documents/ML/ML_main_project/Data2017/preprocessed"
-    # all_files = glob.glob(path + "/*.csv")
+    all_files = glob.glob(path + "/*.csv")
     df = pd.DataFrame()
-    # cur_df : pd.DataFrame
-    # for file in all_files:
-    #     cur_df = pd.read_csv(file)
-    #     df = df.append(cur_df, ignore_index=True)
-    print(path)
-    df = pd.read_csv(
-        f"{path}/Jan.csv",
-        parse_dates=["datetime"],
-        date_parser=dateparse,
-        index_col="datetime",
-    )
+    cur_df: pd.DataFrame
+    for file in all_files:
+        cur_df = pd.read_csv(file)
+        df = df.append(cur_df)
+    # print(path)
+    # df = pd.read_csv(
+    #     f"{path}/Jan.csv",
+    #     parse_dates=["datetime"],
+    #     date_parser=dateparse,
+    #     index_col="datetime",
+    # )
+    df["datetime"] = pd.to_datetime(df["datetime"])
+    df = df.sort_values(by=["datetime"])
+    df = df.set_index("datetime")
     return df
 
 
-def performance(df: pd.DataFrame):
+def performance(df: pd.DataFrame, target_var: str):
     """
-    Function to extract time series data in a way that we can process
-    in our models.
+    Function to give us a baseline performance measure, using cross validation and K-Means
 
     Args:
         df (Pandas Dataframe) : A Dataframe containing the preprocessed traffic data.
+        target_var : Column name of the variable we are attempting to predict
 
     Returns:
         Pandas dataframe of data to be used in models
@@ -51,8 +54,8 @@ def performance(df: pd.DataFrame):
     cv = TimeSeriesSplit(n_splits=5)
     neighbors_model = KNeighborsRegressor(weights="distance")
 
-    X = df.drop("volume", axis=1)
-    y = df[["volume"]]
+    X = df.drop(target_var, axis=1)
+    y = df[target_var]
 
     scores = cross_validate(
         neighbors_model,
@@ -65,7 +68,7 @@ def performance(df: pd.DataFrame):
 
     # Base RMSLE
     base_mse = np.sqrt(-np.mean(scores["test_score"]))
-    print("Base MSE is: {:.5f}".format(base_mse))
+    print(f"Base MSE for {target_var} traffic is: {format(base_mse)}")
 
 
 # def short_term_features():

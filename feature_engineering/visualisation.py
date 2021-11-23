@@ -15,7 +15,7 @@ def visualise_dataset(df):
     """
     red = "#b20710"
 
-    fig, ax = plt.subplots(1, 1, figsize=(20, 10))
+    fig, ax = plt.subplots(1, 1, figsize=(40, 10))
 
     lanes = ["northBound", "southBound"]
     colours = ["blue", "red"]
@@ -29,7 +29,9 @@ def visualise_dataset(df):
     plt.show()
 
 
-def visualise_features(feature_names: List[str], df: pd.DataFrame, large_title: str):
+def visualise_features(
+    feature_names: List[str], df: pd.DataFrame, large_title: str, target_var: str
+):
     """
     Utility function for visualising features effect on data.
 
@@ -37,6 +39,7 @@ def visualise_features(feature_names: List[str], df: pd.DataFrame, large_title: 
         feature_names : A list of feature names
         df : Pandas dataframe of the dataset
         large_title : Large title used for the sub plots
+        target_var : String of the column name we are trying to predict
 
     """
 
@@ -46,5 +49,5 @@ def visualise_features(feature_names: List[str], df: pd.DataFrame, large_title: 
     fig.suptitle(large_title, fontsize=30)
 
     for feature, ax in zip(feature_names, ax.flatten()):
-        grouped = df.groupby(feature)["volume"].mean()
+        grouped = df.groupby(feature)[target_var].mean()
         grouped.plot(ax=ax, color="red", marker="o")
