@@ -9,6 +9,7 @@ from datetime import date, datetime
 from sklearn.model_selection import TimeSeriesSplit, cross_validate
 from sklearn.neighbors import KNeighborsRegressor
 from visualisation import visualise_features
+from pathlib import Path
 
 
 def load_dataframe():
@@ -20,7 +21,9 @@ def load_dataframe():
     dateparse = lambda dates: [datetime.strptime(d, "%Y/%m/%d %H:%M") for d in dates]
 
     # Load data from csvs
-    path = "/mnt/c/Users/Tom/Documents/ML/ML_main_project/Data2017/preprocessed"
+    path = os.path.dirname(os.path.realpath(__file__))
+    path = Path(path).parent
+    path = str(path) + "/Data2017/preprocessed"
     all_files = glob.glob(path + "/*.csv")
     df = pd.DataFrame()
     cur_df: pd.DataFrame
