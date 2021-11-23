@@ -2,14 +2,11 @@
 
 
 ## Pre-Processing
-### For a given excel "Multi-Day Volume by Direction..."
-1. Remove rows 1-6
-2. Remove Columns E-M
-3. Remove Events at bottom
-4. Ensure Excel is only from start to end of month (no overlap of days)
-5. Save as CSV to a folder for that year
-6. Clean up extra rows, these will break the pre-processing script. (Look at the saved csv)
-7. When saving the resultant csv, specify the correct file name and location
+1. Download raw data for TII for each months 'Multi day volume by direction' for a given year
+2. Label each .xlsx file for the given months (Jan-Dec)
+3. Add these files to the directory Data/Data{year}/raw, where year is the year of the downloaded data
+4. Add the year to the years list variable in pre_processing.py
+5. Run pre_processing.py, this will format and perform the pre processing on the raw data, this new data will be placed inside .csv files in the years directory.
 
 ### To-Do
 Need to validate data to ensure that each column contains what we expect.
