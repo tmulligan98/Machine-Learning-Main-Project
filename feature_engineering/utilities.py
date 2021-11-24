@@ -14,6 +14,23 @@ from pathlib import Path
 from typing import List, Any
 import matplotlib.pyplot as plt
 
+YEARS = ["2014", "2015", "2016", "2017", "2018"]
+
+
+def find_csvs() -> List[str]:
+    """
+    Function to help us find csv files in our sub-directories
+    """
+    path = os.path.dirname(os.path.realpath(__file__))
+    path = str(Path(path).parent)
+
+    all_files: List[str] = []
+    files: List[str]
+    for year in YEARS:
+        files = glob.glob(path + f"/Data/Data{year}/preprocessed/*.csv")
+        all_files.extend(files)
+    return all_files
+
 
 def load_dataframe():
     """
@@ -24,22 +41,13 @@ def load_dataframe():
     dateparse = lambda dates: [datetime.strptime(d, "%Y/%m/%d %H:%M") for d in dates]
 
     # Load data from csvs
-    path = os.path.dirname(os.path.realpath(__file__))
-    path = Path(path).parent
-    path = str(path) + "/Data2017/preprocessed"
-    all_files = glob.glob(path + "/*.csv")
+    all_files = find_csvs()
     df = pd.DataFrame()
     cur_df: pd.DataFrame
     for file in all_files:
         cur_df = pd.read_csv(file)
         df = df.append(cur_df)
-    # print(path)
-    # df = pd.read_csv(
-    #     f"{path}/Jan.csv",
-    #     parse_dates=["datetime"],
-    #     date_parser=dateparse,
-    #     index_col="datetime",
-    # )
+    # Tidy a little
     df["datetime"] = pd.to_datetime(df["datetime"])
     df = df.sort_values(by=["datetime"])
     df = df.set_index("datetime")
@@ -145,21 +153,21 @@ def performance(df: pd.DataFrame, target_var: str):
 # def weekly_trend():
 
 
-# if __name__ == "__main__":
-#     # Get our dataframe
-#     df = load_dataframe()
+if __name__ == "__main__":
+    # Get our dataframe
+    df = load_dataframe()
 
-#     # Base features performance, where we use K Nearest Neighbors.
-#     # Here is our baseline, now we add features.
-#     base_performance(df)
-#     visualise_features(["dayOfWeek", "month", "time"], df, "Base Features")
+    # Base features performance, where we use K Nearest Neighbors.
+    # Here is our baseline, now we add features.
+    base_performance(df)
+    visualise_features(["dayOfWeek", "month", "time"], df, "Base Features")
 
-#     # Now have to add more (basic) features like:
-#     # Business quarter of the year, week of year, day of year etc
-#     # Also, use holidays as features!
+    # Now have to add more (basic) features like:
+    # Business quarter of the year, week of year, day of year etc
+    # Also, use holidays as features!
 
-#     # Then we can add more features like:
-#     # Lagging, rolling window, expanding window
-#     # Then maybe also some domain specific features
+    # Then we can add more features like:
+    # Lagging, rolling window, expanding window
+    # Then maybe also some domain specific features
 
-#     # Once that's done, we can start training (and validating) some models!
+    # Once that's done, we can start training (and validating) some models!
