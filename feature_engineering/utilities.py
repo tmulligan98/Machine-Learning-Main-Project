@@ -8,8 +8,11 @@ import time
 from datetime import date, datetime
 from sklearn.model_selection import TimeSeriesSplit, cross_validate
 from sklearn.neighbors import KNeighborsRegressor
+from sklearn.metrics import mean_squared_error
 from visualisation import visualise_features
 from pathlib import Path
+from typing import List, Any
+import matplotlib.pyplot as plt
 
 
 def load_dataframe():
@@ -41,6 +44,62 @@ def load_dataframe():
     df = df.sort_values(by=["datetime"])
     df = df.set_index("datetime")
     return df
+
+
+def cross_validation_feature_params(
+    test_params: List[Any], df: pd.DataFrame, feature_type: str, target_var: str
+):
+    """
+    Function to carry out cross validation, given a timeseries split
+
+    Args:
+        df : Pandas dataframe
+        test_params: A list of parameters to carry out cross validation on
+        feature_type : A string denoting the type of feature we are using for this particular evaluation
+        target_var : The target variable we want to predict
+    """
+
+    plt.rc("font", size=18)
+    plt.rcParams["figure.constrained_layout.use"] = True
+
+    cv = TimeSeriesSplit(n_splits=5)
+
+    mean_mse = []
+    std_mse = []
+
+    for i, q in enumerate(test_params):
+
+        model = KNeighborsRegressor(weights="distance")
+        temp_mse = []
+        if feature_type == "lag":
+            df[feature_type] = df[target_var].shift(q)
+        elif feature_type == "rolling_window_mean":
+            df[feature_type] = df[target_var].rolling(window=q).mean()
+        elif feature_type == "rolling_window_max":
+            df[feature_type] = df[target_var].rolling(window=q).max()
+        elif feature_type == "rolling_window_min":
+            df[feature_type] = df[target_var].rolling(window=q).min()
+
+        df[feature_type] = df[feature_type].fillna(0)
+
+        X = df.drop(target_var, axis=1).to_numpy()
+        y = df["northBound"]
+
+        for train, test in cv.split(X):
+            model.fit(X[train], y[train])
+            ypred = model.predict(X[test])
+            temp_mse.append(mean_squared_error(y[test], ypred))
+
+        mean_mse.append(np.array(temp_mse).mean())
+        std_mse.append(np.array(temp_mse).std())
+
+    plt.show()
+
+    plt.errorbar(test_params, mean_mse, yerr=std_mse)
+    plt.title(f"{feature_type} Cross Validation")
+    plt.xlabel("Lag")
+    plt.ylabel("Mean MSE")
+    plt.xlim((1, test_params[-1]))
 
 
 def performance(df: pd.DataFrame, target_var: str):
