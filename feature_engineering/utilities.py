@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import List, Any
 import matplotlib.pyplot as plt
 
-YEARS = ["2018"]
+YEARS = ["2018","2017","2016","2015","2014"]
 
 
 def find_csvs() -> List[str]:
@@ -51,12 +51,17 @@ def load_dataframe():
     df["datetime"] = pd.to_datetime(df["datetime"])
     df = df.sort_values(by=["datetime"])
     df = df.set_index("datetime")
-    # Temporary
-    df = df.replace("-", np.nan)
-    df.dropna(subset=["northBound", "southBound"], inplace=True)
-
+    
+    #replace '-' to -1 to change dataframe type to int
+    df = df.replace("-", -1)
     df["northBound"] = df["northBound"].astype(str).astype(np.float32).astype(int)
     df["southBound"] = df["southBound"].astype(str).astype(np.float32).astype(int)
+    df = df.replace(-1, np.NaN) #change -1 to NaN for interpolating NaN values
+
+    #impute missing data with linear interpolation
+    df["northBound"].interpolate(method='linear', axis=0,inplace=True)
+    df["southBound"].interpolate(method='linear', axis=0,inplace=True)
+
     return df
 
 
