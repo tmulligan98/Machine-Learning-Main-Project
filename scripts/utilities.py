@@ -97,8 +97,8 @@ def cross_validation_feature_params(
 
         df[feature_type] = df[feature_type].fillna(0)
 
+        y = df[target_var]
         X = df.drop(target_var, axis=1).to_numpy()
-        y = df["northBound"]
 
         for train, test in cv.split(X):
             model.fit(X[train], y[train])
