@@ -7,6 +7,7 @@ import glob
 import os
 import time
 from datetime import date, datetime
+from sklearn import neighbors
 from sklearn.model_selection import TimeSeriesSplit, cross_validate
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.metrics import mean_squared_error
@@ -122,9 +123,50 @@ def cross_validation_feature_params(
     plt.xlim((1, test_params[-1]))
 
 
+# For validation/validation
+def one_step_ahead_prediction(trained_model: Any, testX_single: np.array) -> int:
+    """
+    Given a previous datapoint, predict one step ahead.
+
+    Args:
+
+    Returns:
+    """
+    ypred = trained_model.predict(np.array([testX_single]))
+
+    # This will give us the prediction for one step ahead.
+    # Use this predicition as the lag of the next point.
+    return ypred[0]
+
+
+def n_one_step_ahead_prediction(
+    trained_model: Any, testX: np.array, n: int, two_previous_volumes
+):
+    """ """
+
+    # Predict first step. (This first one has it's lag features already there from the last
+    # element of the test set!)
+    y_predictions = []
+    ypred = one_step_ahead_prediction(trained_model, testX[0])
+
+    y_predictions.append(ypred)
+
+    for i in range(1, n):
+        # Using previous prediction, add to the feature
+        temp = testX[i]
+        temp[3] = ypred
+        # Difference features
+
+        # Prediction
+        ypred = one_step_ahead_prediction(trained_model, temp)
+        y_predictions.append(ypred)
+
+    return y_predictions
+
+
 def cross_validation_model(
     X: np.array, y: np.array, model: Any, cv: TimeSeriesSplit
-) -> collections.namedtuple:
+) -> List[Any]:
     """
     Function to carry out a chained cross validation using TimeSeriesSplit
 
@@ -140,8 +182,8 @@ def cross_validation_model(
 
     Metrics = collections.namedtuple("Metrics", ["mean", "std"])
 
-    mean_mse: np.array
-    std_mse: np.array
+    mean_mse = []
+    std_mse = []
     temp_mse = []
 
     for train, test in cv.split(X):
@@ -149,11 +191,7 @@ def cross_validation_model(
         ypred = model.predict(X[test])
         temp_mse.append(mean_squared_error(y[test], ypred))
 
-    mean_mse.append(np.array(temp_mse).mean())
-    std_mse.append(np.array(temp_mse).std())
-
-    metrics = Metrics(mean_mse, std_mse)
-    return metrics
+    return temp_mse
 
 
 def performance(df: pd.DataFrame, target_var: str):
@@ -187,33 +225,45 @@ def performance(df: pd.DataFrame, target_var: str):
     print(f"Base MSE for {target_var} traffic is: {format(base_mse)}")
 
 
-# def short_term_features():
-#     """
-#     Function to fetch time series features for short term
-#     trends. (Every hour)
-#     """
+if __name__ == "__main__":
+    # Get our dataframe
+    df = load_dataframe()
 
+    # We're going to hold out 12 hours of data points to predict on!~
+    def train_test_split(X, y, test_size):
+        return (X[:-test_size, :], X[-test_size:, :], y[:-test_size], y[-test_size:])
 
-# def daily_trend():
+    df_north = df.drop(columns=["southBound"])
 
-# def weekly_trend():
+    df_north["volume_lag_1"] = df_north["northBound"].shift(1, fill_value=0)
+    df_north["volume_lag_1_diff"] = df_north["volume_lag_1"] - df_north[
+        "northBound"
+    ].shift(2, fill_value=0)
 
+    # Target Variable
+    y_north = df_north["northBound"].to_numpy()
+    # Feature Vectors
+    X_north = df_north.drop(columns=["northBound"]).to_numpy()
 
-# if __name__ == "__main__":
-#     # Get our dataframe
-#     df = load_dataframe()
+    # Hold out a validation set
+    (X_north, X_north_val, y_north, y_north_val) = train_test_split(
+        X_north, y_north, test_size=12
+    )
 
-#     # Base features performance, where we use K Nearest Neighbors.
-#     # Here is our baseline, now we add features.
-#     base_performance(df)
-#     visualise_features(["dayOfWeek", "month", "time"], df, "Base Features")
+    neighbors_model = KNeighborsRegressor(weights="distance").fit(X_north, y_north)
+    predictions = n_one_step_ahead_prediction(neighbors_model, X_north_val, n=12)
 
-#     # Now have to add more (basic) features like:
-#     # Business quarter of the year, week of year, day of year etc
-#     # Also, use holidays as features!
+    # Base features performance, where we use K Nearest Neighbors.
+    # Here is our baseline, now we add features.
+    # base_performance(df)
+    # visualise_features(["dayOfWeek", "month", "time"], df, "Base Features")
 
-#     # Then we can add more features like:
-#     # Lagging, rolling window, expanding window
-#     # Then maybe also some domain specific features
+    # Now have to add more (basic) features like:
+    # Business quarter of the year, week of year, day of year etc
+    # Also, use holidays as features!
 
-#     # Once that's done, we can start training (and validating) some models!
+    # Then we can add more features like:
+    # Lagging, rolling window, expanding window
+    # Then maybe also some domain specific features
+
+    # Once that's done, we can start training (and validating) some models!
