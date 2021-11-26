@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.neighbors import KNeighborsRegressor
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn import linear_model
 import matplotlib.pyplot as plt
@@ -65,9 +66,35 @@ def evaluate_ridge_hyperparams(X, y, test_params: List[Any]):
     plt.xlim((0, test_params[-1]))
 
 
-def evaluate_decision_tree_hyperparams():
+def evaluate_decision_tree_hyperparams(X,y,test_params: List[Any]):
     """ """
+    plt.rc("font", size=18)
+    plt.rcParams["figure.constrained_layout.use"] = True
 
+    cv = TimeSeriesSplit(n_splits=5)
+
+    mean_mse = []
+    std_mse = []
+
+    for depth in test_params:
+
+        model = DecisionTreeRegressor(max_depth=depth)
+
+        metrics_named_tuple = cross_validation_model(X, y, model, cv)
+        mean_mse.append(np.array(metrics_named_tuple).mean())
+        std_mse.append(np.array(metrics_named_tuple).std())
+
+    plt.show()
+
+    plt.errorbar(test_params, mean_mse, yerr=std_mse)
+    plt.title(f"Decision Tree Cross Validation")
+    plt.xlabel("Max Depth")
+    plt.ylabel("MSE")
+    plt.xlim((0, test_params[-1]))
+
+    
+    
+  
 
 def evaluate_MLP_hyperparams():
     """ """

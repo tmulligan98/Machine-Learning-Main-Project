@@ -4,6 +4,8 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import pause
 from typing import List
+from sklearn.tree import DecisionTreeRegressor
+
 
 
 def visualise_dataset(df):
@@ -51,3 +53,23 @@ def visualise_features(
     for feature, ax in zip(feature_names, ax.flatten()):
         grouped = df.groupby(feature)[target_var].mean()
         grouped.plot(ax=ax, color="red", marker="o")
+
+def visualise_decision_tree(decision_tree_model,X,y):
+    # Fit regression model
+    
+
+    # Predict
+    y_pred = decision_tree_model.predict(X)
+    
+
+    # Plot the results
+    plt.figure()
+    
+    x_axis=np.arange(0,y.size,1)
+    plt.scatter(x_axis,y, s=20, edgecolor="black", c="orange", label="data")
+    plt.plot(x_axis,y_pred, color="blue", label='decision tree regressor',linewidth=2)
+    plt.xlabel("hour index")
+    plt.ylabel("target")
+    plt.title("Decision Tree Regression")
+    plt.legend()
+    plt.show()

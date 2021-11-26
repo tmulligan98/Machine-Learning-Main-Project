@@ -140,7 +140,7 @@ def one_step_ahead_prediction(trained_model: Any, testX_single: np.array) -> int
 
 
 def n_one_step_ahead_prediction(
-    trained_model: Any, testX: np.array, n: int, two_previous_volumes
+    trained_model: Any, testX: np.array, n: int
 ):
     """ """
 
