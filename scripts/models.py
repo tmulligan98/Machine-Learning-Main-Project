@@ -117,8 +117,8 @@ def evaluate_MLP_hidden_nodes(X: np.array, y: np.array, test_params: List[Any]):
     plt.show()
 
     plt.errorbar(test_params, mean_mse, yerr=std_mse)
-    plt.title(f"Ridge Cross Validation")
-    plt.xlabel("Ci")
+    plt.title(f"MLP Hidden Layer Size Cross Validation")
+    plt.xlabel("Hidden Nodes")
     plt.ylabel("MSE")
     plt.xlim((0, test_params[-1]))
 
@@ -144,8 +144,8 @@ def evaluate_MLP_penalty_weight(X: np.array, y: np.array, test_params: List[Any]
     plt.show()
 
     plt.errorbar(test_params, mean_mse, yerr=std_mse)
-    plt.title(f"Ridge Cross Validation")
-    plt.xlabel("Ci")
+    plt.title(f"MLP L2 Penalty weight Cross Validation")
+    plt.xlabel("L2 Penalty Weight")
     plt.ylabel("MSE")
     plt.xlim((0, test_params[-1]))
 
