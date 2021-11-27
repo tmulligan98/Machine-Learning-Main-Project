@@ -7,7 +7,6 @@ from typing import List
 from sklearn.tree import DecisionTreeRegressor
 
 
-
 def visualise_dataset(df):
     """
     Utility function for visualising the preprocessed dataset
@@ -54,22 +53,47 @@ def visualise_features(
         grouped = df.groupby(feature)[target_var].mean()
         grouped.plot(ax=ax, color="red", marker="o")
 
-def visualise_decision_tree(decision_tree_model,X,y):
+
+def visualise_decision_tree(decision_tree_model, X, y):
     # Fit regression model
-    
 
     # Predict
     y_pred = decision_tree_model.predict(X)
-    
 
     # Plot the results
     plt.figure()
-    
-    x_axis=np.arange(0,y.size,1)
-    plt.scatter(x_axis,y, s=20, edgecolor="black", c="orange", label="data")
-    plt.plot(x_axis,y_pred, color="blue", label='decision tree regressor',linewidth=2)
+
+    x_axis = np.arange(0, y.size, 1)
+    plt.scatter(x_axis, y, s=20, edgecolor="black", c="orange", label="data")
+    plt.plot(x_axis, y_pred, color="blue", label="decision tree regressor", linewidth=2)
     plt.xlabel("hour index")
     plt.ylabel("target")
     plt.title("Decision Tree Regression")
+    plt.legend()
+    plt.show()
+
+
+def visualise_forecast_vs_true(
+    X_test: np.array, y_test: np.array, y_forecast: np.array, model_name: str
+):
+    """
+    Function to visualise forecasted traffic volumes against the true values
+
+    Args:
+        X_test : Numpy array of test feature vectors
+        y_test : Numpy array of testing output features
+        y_forecast : Numpy array of forecasted (predicted) output features
+
+    """
+    # Plot the results
+    plt.figure()
+
+    plt.scatter(
+        X_test, y_test, s=20, edgecolor="black", c="orange", label="Testing data"
+    )
+    plt.plot(X_test, y_forecast, color="blue", label="Forecasted data", linewidth=2)
+    plt.xlabel("Hours")
+    plt.ylabel("Traffic Volume")
+    plt.title(f"{model_name} predicted traffic volume")
     plt.legend()
     plt.show()
