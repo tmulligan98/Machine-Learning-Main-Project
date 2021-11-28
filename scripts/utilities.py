@@ -13,7 +13,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.metrics import mean_squared_error
 from visualisation import visualise_features
 from pathlib import Path
-from typing import List, Any
+from typing import List, Any, Dict
 import matplotlib.pyplot as plt
 
 YEARS = ["2018"]
@@ -121,47 +121,6 @@ def cross_validation_feature_params(
     plt.xlabel("Lag")
     plt.ylabel("Mean MSE")
     plt.xlim((1, test_params[-1]))
-
-
-# For validation/validation
-def one_step_ahead_prediction(trained_model: Any, testX_single: np.array) -> int:
-    """
-    Given a previous datapoint, predict one step ahead.
-
-    Args:
-
-    Returns:
-    """
-    ypred = trained_model.predict(np.array([testX_single]))
-
-    # This will give us the prediction for one step ahead.
-    # Use this predicition as the lag of the next point.
-    return ypred[0]
-
-
-def n_one_step_ahead_prediction(
-    trained_model: Any, testX: np.array, n: int
-):
-    """ """
-
-    # Predict first step. (This first one has it's lag features already there from the last
-    # element of the test set!)
-    y_predictions = []
-    ypred = one_step_ahead_prediction(trained_model, testX[0])
-
-    y_predictions.append(ypred)
-
-    for i in range(1, n):
-        # Using previous prediction, add to the feature
-        temp = testX[i]
-        temp[3] = ypred
-        # Difference features
-
-        # Prediction
-        ypred = one_step_ahead_prediction(trained_model, temp)
-        y_predictions.append(ypred)
-
-    return y_predictions
 
 
 def cross_validation_model(
