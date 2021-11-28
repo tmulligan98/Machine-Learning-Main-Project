@@ -13,6 +13,9 @@ from typing import Any, Dict
 from sklearn.neural_network import MLPRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import RandomizedSearchCV
+from sklearn.ensemble import AdaBoostRegressor
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import cross_validate, TimeSeriesSplit
 
 
 def evaluate_lasso_hyperparams(X, y, test_params: List[Any]):
@@ -169,3 +172,18 @@ def evaluate_random_forest_hyperparams(
 
     # Print the best params
     print(rf_grid_search.best_params_)
+
+
+def evaluate_ada_boost_hyperparams(X,y):
+    ada_boost_model=AdaBoostRegressor()
+    params_grid=dict()
+    params_grid["base_estimator"]=[
+    DecisionTreeRegressor(max_depth=6),
+    DecisionTreeRegressor(max_depth=7)]
+    params_grid["n_estimators"]=[20,30,40,50]
+    params_grid["learning_rate"]=[0.01,0.1,1,1.5,2]
+    params_grid["loss"]=['linear', 'square', 'exponential']
+    cv = TimeSeriesSplit(n_splits=5)
+    grid_search = GridSearchCV(estimator=ada_boost_model, param_grid=params_grid, n_jobs=-1, cv=cv)
+    grid_result = grid_search.fit(X, y)
+    print("best params: " +str(grid_result.best_params_))

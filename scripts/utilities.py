@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import List, Any
 import matplotlib.pyplot as plt
 
-YEARS = ["2018"]
+YEARS = ["2018","2017","2016"]
 
 
 def find_csvs() -> List[str]:

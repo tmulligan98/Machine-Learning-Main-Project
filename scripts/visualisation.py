@@ -10,7 +10,6 @@ from sklearn.tree import DecisionTreeRegressor
 def visualise_dataset(df):
     """
     Utility function for visualising the preprocessed dataset
-
     Args:
         df: Pandas dataframe containing the data
     """
@@ -35,13 +34,11 @@ def visualise_features(
 ):
     """
     Utility function for visualising features effect on data.
-
     Args:
         feature_names : A list of feature names
         df : Pandas dataframe of the dataset
         large_title : Large title used for the sub plots
         target_var : String of the column name we are trying to predict
-
     """
 
     num_plots: int = len(feature_names)
@@ -78,12 +75,10 @@ def visualise_forecast_vs_true(
 ):
     """
     Function to visualise forecasted traffic volumes against the true values
-
     Args:
         X_test : Numpy array of test feature vectors
         y_test : Numpy array of testing output features
         y_forecast : Numpy array of forecasted (predicted) output features
-
     """
     # Plot the results
     plt.figure()
