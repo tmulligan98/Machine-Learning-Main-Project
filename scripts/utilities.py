@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import List, Any, Dict
 import matplotlib.pyplot as plt
 
-YEARS = ["2018"]
+YEARS = ["2018","2017","2016"]
 
 
 def find_csvs() -> List[str]:
@@ -184,45 +184,45 @@ def performance(df: pd.DataFrame, target_var: str):
     print(f"Base MSE for {target_var} traffic is: {format(base_mse)}")
 
 
-if __name__ == "__main__":
-    # Get our dataframe
-    df = load_dataframe()
+# if __name__ == "__main__":
+#     # Get our dataframe
+#     df = load_dataframe()
 
-    # We're going to hold out 12 hours of data points to predict on!~
-    def train_test_split(X, y, test_size):
-        return (X[:-test_size, :], X[-test_size:, :], y[:-test_size], y[-test_size:])
+#     # We're going to hold out 12 hours of data points to predict on!~
+#     def train_test_split(X, y, test_size):
+#         return (X[:-test_size, :], X[-test_size:, :], y[:-test_size], y[-test_size:])
 
-    df_north = df.drop(columns=["southBound"])
+#     df_north = df.drop(columns=["southBound"])
 
-    df_north["volume_lag_1"] = df_north["northBound"].shift(1, fill_value=0)
-    df_north["volume_lag_1_diff"] = df_north["volume_lag_1"] - df_north[
-        "northBound"
-    ].shift(2, fill_value=0)
+#     df_north["volume_lag_1"] = df_north["northBound"].shift(1, fill_value=0)
+#     df_north["volume_lag_1_diff"] = df_north["volume_lag_1"] - df_north[
+#         "northBound"
+#     ].shift(2, fill_value=0)
 
-    # Target Variable
-    y_north = df_north["northBound"].to_numpy()
-    # Feature Vectors
-    X_north = df_north.drop(columns=["northBound"]).to_numpy()
+#     # Target Variable
+#     y_north = df_north["northBound"].to_numpy()
+#     # Feature Vectors
+#     X_north = df_north.drop(columns=["northBound"]).to_numpy()
 
-    # Hold out a validation set
-    (X_north, X_north_val, y_north, y_north_val) = train_test_split(
-        X_north, y_north, test_size=12
-    )
+#     # Hold out a validation set
+#     (X_north, X_north_val, y_north, y_north_val) = train_test_split(
+#         X_north, y_north, test_size=12
+#     )
 
-    neighbors_model = KNeighborsRegressor(weights="distance").fit(X_north, y_north)
-    predictions = n_one_step_ahead_prediction(neighbors_model, X_north_val, n=12)
+#     neighbors_model = KNeighborsRegressor(weights="distance").fit(X_north, y_north)
+#     predictions = n_one_step_ahead_prediction(neighbors_model, X_north_val, n=12)
 
-    # Base features performance, where we use K Nearest Neighbors.
-    # Here is our baseline, now we add features.
-    # base_performance(df)
-    # visualise_features(["dayOfWeek", "month", "time"], df, "Base Features")
+#     # Base features performance, where we use K Nearest Neighbors.
+#     # Here is our baseline, now we add features.
+#     # base_performance(df)
+#     # visualise_features(["dayOfWeek", "month", "time"], df, "Base Features")
 
-    # Now have to add more (basic) features like:
-    # Business quarter of the year, week of year, day of year etc
-    # Also, use holidays as features!
+#     # Now have to add more (basic) features like:
+#     # Business quarter of the year, week of year, day of year etc
+#     # Also, use holidays as features!
 
-    # Then we can add more features like:
-    # Lagging, rolling window, expanding window
-    # Then maybe also some domain specific features
+#     # Then we can add more features like:
+#     # Lagging, rolling window, expanding window
+#     # Then maybe also some domain specific features
 
-    # Once that's done, we can start training (and validating) some models!
+#     # Once that's done, we can start training (and validating) some models!
