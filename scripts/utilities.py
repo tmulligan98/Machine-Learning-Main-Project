@@ -267,3 +267,11 @@ if __name__ == "__main__":
     # Then maybe also some domain specific features
 
     # Once that's done, we can start training (and validating) some models!
+
+from sklearn.tree import DecisionTreeRegressor
+
+def get_decision_tree_models(max_depth_array):
+    models=[]
+    for depth in max_depth_array:
+        models.append(DecisionTreeRegressor(max_depth=depth))
+    return models

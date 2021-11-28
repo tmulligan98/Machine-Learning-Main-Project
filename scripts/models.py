@@ -174,16 +174,13 @@ def evaluate_random_forest_hyperparams(
     print(rf_grid_search.best_params_)
 
 
-def evaluate_ada_boost_hyperparams(X,y):
+def evaluate_ada_boost_hyperparams(X,y,params_grid):
     ada_boost_model=AdaBoostRegressor()
-    params_grid=dict()
-    params_grid["base_estimator"]=[
-    DecisionTreeRegressor(max_depth=6),
-    DecisionTreeRegressor(max_depth=7)]
-    params_grid["n_estimators"]=[20,30,40,50]
-    params_grid["learning_rate"]=[0.01,0.1,1,1.5,2]
-    params_grid["loss"]=['linear', 'square', 'exponential']
+    
+
     cv = TimeSeriesSplit(n_splits=5)
-    grid_search = GridSearchCV(estimator=ada_boost_model, param_grid=params_grid, n_jobs=-1, cv=cv)
+    #grid_search = GridSearchCV(estimator=ada_boost_model, param_grid=params_grid, n_jobs=-1, cv=cv)
+    grid_search = RandomizedSearchCV(estimator=ada_boost_model,cv=cv,param_distributions=params_grid)
+
     grid_result = grid_search.fit(X, y)
     print("best params: " +str(grid_result.best_params_))
