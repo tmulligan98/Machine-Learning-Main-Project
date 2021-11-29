@@ -1,0 +1,61 @@
+Model,Month,Test MSE,Validation MSE
+kNN,Jan,255.0,1202875.0
+Decision Tree,Jan,368.0,832135.0
+AdaBoost,Jan,249.0,40044.0
+Random Forest,Jan,249.0,89598.0
+ANN,Jan,282.0,10946043.0
+kNN,Feb,252.0,2955802.0
+Decision Tree,Feb,377.0,1774878.0
+AdaBoost,Feb,246.0,1154046.0
+Random Forest,Feb,246.0,1158629.0
+ANN,Feb,279.0,14675927.0
+kNN,Mar,255.0,1870019.0
+Decision Tree,Mar,362.0,504709.0
+AdaBoost,Mar,246.0,372975.0
+Random Forest,Mar,249.0,369742.0
+ANN,Mar,286.0,12182669.0
+kNN,Apr,254.0,1147314.0
+Decision Tree,Apr,361.0,258479.0
+AdaBoost,Apr,243.0,130949.0
+Random Forest,Apr,243.0,77907.0
+ANN,Apr,277.0,3094174.0
+kNN,May,253.0,1584046.0
+Decision Tree,May,360.0,442027.0
+AdaBoost,May,238.0,223745.0
+Random Forest,May,243.0,224290.0
+ANN,May,277.0,2957272.0
+kNN,Jun,254.0,1976232.0
+Decision Tree,Jun,356.0,1485398.0
+AdaBoost,Jun,239.0,130268.0
+Random Forest,Jun,240.0,172440.0
+ANN,Jun,273.0,11925672.0
+kNN,Jul,256.0,1163221.0
+Decision Tree,Jul,370.0,618457.0
+AdaBoost,Jul,243.0,107586.0
+Random Forest,Jul,242.0,126826.0
+ANN,Jul,276.0,16000614.0
+kNN,Aug,256.0,1115408.0
+Decision Tree,Aug,354.0,483425.0
+AdaBoost,Aug,242.0,152875.0
+Random Forest,Aug,243.0,156648.0
+ANN,Aug,276.0,3.167775372715835e+21
+kNN,Sep,256.0,1592158.0
+Decision Tree,Sep,345.0,638528.0
+AdaBoost,Sep,243.0,50045.0
+Random Forest,Sep,245.0,99799.0
+ANN,Sep,290.0,7549601.0
+kNN,Oct,254.0,1575828.0
+Decision Tree,Oct,339.0,296310.0
+AdaBoost,Oct,241.0,178803.0
+Random Forest,Oct,242.0,173815.0
+ANN,Oct,273.0,12823441.0
+kNN,Nov,253.0,1079947.0
+Decision Tree,Nov,345.0,205388.0
+AdaBoost,Nov,240.0,121783.0
+Random Forest,Nov,246.0,118581.0
+ANN,Nov,271.0,10476711.0
+kNN,Dec,252.0,2337413.0
+Decision Tree,Dec,350.0,880551.0
+AdaBoost,Dec,240.0,772899.0
+Random Forest,Dec,242.0,746772.0
+ANN,Dec,274.0,11237364.0

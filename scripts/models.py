@@ -16,6 +16,7 @@ from sklearn.model_selection import RandomizedSearchCV
 from sklearn.ensemble import AdaBoostRegressor
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import cross_validate, TimeSeriesSplit
+from forecasting import n_one_step_ahead_prediction
 
 
 def evaluate_lasso_hyperparams(X, y, test_params: List[Any]):
@@ -85,6 +86,18 @@ def get_model_MSE(model,X,y):
         )
 
     return np.sqrt(-np.mean(scores["test_score"]))
+
+def get_and_print_test_and_validation_MSE(model_name,model,X,y,X_val,y_val,n_forecast,lagged_points,month_map,month_index):
+    model.fit(X,y)
+    get_model_MSE(model,X,y)
+    y_forecast_north_temp = n_one_step_ahead_prediction(model, X_val, n_forecast, lagged_points, relevant_lag_indexes=[0,1,2,3,4,5,11])
+    print(model_name+","+
+        str(month_map.get(month_index))+
+         ","+
+        str(np.trunc(get_model_MSE(model,X,y)))+
+        ","+
+        str(np.trunc(mean_squared_error(y_val, y_forecast_north_temp)))
+    )
 
 
 def evaluate_decision_tree_hyperparams(X, y, test_params: List[Any]):
