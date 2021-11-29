@@ -87,7 +87,7 @@ def get_model_MSE(model,X,y):
 
     return np.sqrt(-np.mean(scores["test_score"]))
 
-def get_and_print_test_and_validation_MSE(df_test_scores,df_val_scores,df_val_week_scores,model_name,model,X,y,X_val,y_val,n_forecast,lagged_points,month_index):
+def get_and_print_test_and_validation_MSE(test_scores,val_scores,val_week_scores,model_name,model,X,y,X_val,y_val,n_forecast,lagged_points,month_index):
     month_map = {
         0:"Dec",
         1:"Nov",
@@ -104,8 +104,7 @@ def get_and_print_test_and_validation_MSE(df_test_scores,df_val_scores,df_val_we
     }
 
     model.fit(X,y)
-    get_model_MSE(model,X,y)
-    y_forecast_temp = n_one_step_ahead_prediction(model, X_val, n_forecast, lagged_points, relevant_lag_indexes=[0,1,2,3,4,5,11])
+    
 
     #print(model_name+","+
      #   str(month_map.get(month_index))+
@@ -115,9 +114,10 @@ def get_and_print_test_and_validation_MSE(df_test_scores,df_val_scores,df_val_we
         #str(np.trunc(mean_squared_error(y_val, y_forecast_north_temp)))
     #)
     
-    df_test_scores[model_name][month_map.get(month_index)]=np.trunc(get_model_MSE(model,X,y))
-    df_val_scores[model_name][month_map.get(month_index)]=np.trunc(mean_squared_error(y_val, y_forecast_temp))
-    df_val_week_scores[model_name][month_map.get(month_index)]=np.trunc(mean_squared_error(y_val[24*7:], y_forecast_temp[24*7:]))
+    test_scores[model_name][month_map.get(month_index)]=np.trunc(get_model_MSE(model,X,y))
+    y_forecast_temp = n_one_step_ahead_prediction(model, X_val, n_forecast, lagged_points, relevant_lag_indexes=[0,1,2,3,4,5,11])
+    val_scores[model_name][month_map.get(month_index)]=np.trunc(mean_squared_error(y_val, y_forecast_temp))
+    val_week_scores[model_name][month_map.get(month_index)]=np.trunc(mean_squared_error(y_val[24*7:], y_forecast_temp[24*7:]))
 
 
 
