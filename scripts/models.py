@@ -71,6 +71,21 @@ def evaluate_ridge_hyperparams(X, y, test_params: List[Any]):
     plt.ylabel("MSE")
     plt.xlim((0, test_params[-1]))
 
+def get_model_MSE(model,X,y):
+    model.fit(X,y)
+
+    cv =TimeSeriesSplit(5)
+    scores = cross_validate(
+            model,
+            X,
+            y,
+            cv=cv,
+            scoring="neg_mean_squared_error",
+            return_estimator=True,
+        )
+
+    return np.sqrt(-np.mean(scores["test_score"]))
+
 
 def evaluate_decision_tree_hyperparams(X, y, test_params: List[Any]):
     """ """
