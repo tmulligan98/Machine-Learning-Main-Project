@@ -16,8 +16,10 @@ from pathlib import Path
 from typing import List, Any, Dict
 import matplotlib.pyplot as plt
 
-YEARS = ["2018","2017"]
+YEARS = ["2018","2017","2016","2015","2014"]
 
+def train_test_split(X,y,test_size):
+	return (X[:-test_size, :], X[-test_size:, :], y[:-test_size], y[-test_size:])
 
 def find_csvs() -> List[str]:
     """

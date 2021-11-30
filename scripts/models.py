@@ -17,7 +17,8 @@ from sklearn.ensemble import AdaBoostRegressor
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import cross_validate, TimeSeriesSplit
 from forecasting import n_one_step_ahead_prediction
-
+import copy
+from utilities import train_test_split
 
 def evaluate_lasso_hyperparams(X, y, test_params: List[Any]):
     """ """
@@ -87,7 +88,7 @@ def get_model_MSE(model,X,y):
 
     return np.sqrt(-np.mean(scores["test_score"]))
 
-def get_and_print_test_and_validation_MSE(test_scores,val_scores,val_week_scores,model_name,model,X,y,X_val,y_val,n_forecast,lagged_points,month_index):
+def calc_test_and_validation_MSE(test_scores,val_scores,val_week_scores,model_name,model,X,y,X_val,y_val,n_forecast,lagged_points,month_index):
     month_map = {
         0:"Dec",
         1:"Nov",
@@ -104,22 +105,52 @@ def get_and_print_test_and_validation_MSE(test_scores,val_scores,val_week_scores
     }
 
     model.fit(X,y)
-    
-
-    #print(model_name+","+
-     #   str(month_map.get(month_index))+
-      #   ","+
-       # str(np.trunc(get_model_MSE(model,X,y)))+
-        #","+
-        #str(np.trunc(mean_squared_error(y_val, y_forecast_north_temp)))
-    #)
-    
-    test_scores[model_name][month_map.get(month_index)]=np.trunc(get_model_MSE(model,X,y))
+    test_scores[month_map.get(month_index)]=np.trunc(get_model_MSE(model,X,y))
     y_forecast_temp = n_one_step_ahead_prediction(model, X_val, n_forecast, lagged_points, relevant_lag_indexes=[0,1,2,3,4,5,11])
-    val_scores[model_name][month_map.get(month_index)]=np.trunc(mean_squared_error(y_val, y_forecast_temp))
-    val_week_scores[model_name][month_map.get(month_index)]=np.trunc(mean_squared_error(y_val[24*7:], y_forecast_temp[24*7:]))
+    val_scores[month_map.get(month_index)]=np.trunc(mean_squared_error(y_val, y_forecast_temp))
+    val_week_scores[month_map.get(month_index)]=np.trunc(mean_squared_error(y_val[24*7:], y_forecast_temp[24*7:]))
 
 
+def twleve_month_forecast(
+    df_north,df_south,n_forecast,lag_range,model_name,model
+    ):
+    test_scores={}
+    val_month_scores={}
+    val_week_scores={}
+
+    for month_index in range(11,-1,-1):
+        df_north_temp=df_north.copy()
+        df_south_temp=df_south.copy()
+
+        #start by removing 0 days for december, 
+        remove_rows=24*30*month_index
+        if(month_index!=0):
+            df_north_temp=df_north_temp[:-remove_rows]
+            df_south_temp=df_south[:-remove_rows]
+        
+        # 12-previous points
+        lagged_points = df_north_temp.to_numpy()[-12-lag_range-1:-12]  # This gives us last twelve rows of training data
+        lagged_points = lagged_points[
+            :, 3
+        ]  # Get the volume for each row, these are our lagged points
+
+
+        # Target Variable
+        y_north_temp = df_north_temp["northBound"].to_numpy()
+        y_south_temp = df_south_temp["southBound"].to_numpy()
+
+        # Feature Vectors
+        X_north_temp = df_north_temp.drop(columns=["northBound"]).to_numpy()
+        X_south_temp = df_south_temp.drop(columns=["southBound"]).to_numpy()
+
+
+        # Hold out a validation set
+        (X_north_temp, X_north_val_temp, y_north_temp, y_north_val_temp) = train_test_split(X_north_temp, y_north_temp, test_size=n_forecast)
+        (X_south_temp, X_south_val_temp, y_south_temp, y_south_val_temp) = train_test_split(X_south_temp, y_south_temp, test_size=n_forecast)
+        
+        calc_test_and_validation_MSE(test_scores,val_month_scores,val_week_scores,model_name,model,X_north_temp,y_north_temp,X_north_val_temp,y_north_val_temp,n_forecast,lagged_points,month_index)
+
+    return (test_scores,val_month_scores,val_week_scores)
 
 def evaluate_decision_tree_hyperparams(X, y, test_params: List[Any]):
     """ """
