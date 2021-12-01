@@ -20,12 +20,15 @@ def visualise_dataset(df):
     lanes = ["northBound", "southBound"]
     colours = ["blue", "red"]
 
-    ax.set(xlabel="", title="Lane Volume")
-    for lane, colour in zip(lanes, colours):
-        df[lane].plot(color=colour, label=lane)
+    ax.set_xlabel("", fontsize=20)
+    ax.set_title("Lane Volume", fontsize=20)
+    ax.set_ylabel("Volume", fontsize=20)
 
-    plt.ylabel("Volume")
-    plt.legend()
+    include = df[df.index.year == 2017]
+    for lane, colour in zip(lanes, colours):
+        include[lane].plot(color=colour, label=lane)
+
+    plt.legend(fontsize=20)
     plt.show()
 
 
@@ -48,7 +51,9 @@ def visualise_features(
 
     for feature, ax in zip(feature_names, ax.flatten()):
         grouped = df.groupby(feature)[target_var].mean()
-        grouped.plot(ax=ax, color="red", marker="o")
+        grouped.plot(ax=ax, color="red", marker="o", label="Mean Volume")
+        ax.set_ylabel("Mean Volume")
+        ax.set_title(f"{feature} mean volume")
 
 
 def visualise_decision_tree(decision_tree_model, X, y):

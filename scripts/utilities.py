@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import List, Any, Dict
 import matplotlib.pyplot as plt
 
-YEARS = ["2018","2017","2016"]
+YEARS = ["2018", "2017", "2016", "2015", "2014"]
 
 
 def find_csvs() -> List[str]:
@@ -229,8 +229,9 @@ def performance(df: pd.DataFrame, target_var: str):
 
 from sklearn.tree import DecisionTreeRegressor
 
+
 def get_decision_tree_models(max_depth_array):
-    models=[]
+    models = []
     for depth in max_depth_array:
         models.append(DecisionTreeRegressor(max_depth=depth))
     return models
