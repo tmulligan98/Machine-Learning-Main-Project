@@ -231,8 +231,9 @@ def performance(df: pd.DataFrame, target_var: str):
 
 from sklearn.tree import DecisionTreeRegressor
 
+
 def get_decision_tree_models(max_depth_array):
-    models=[]
+    models = []
     for depth in max_depth_array:
         models.append(DecisionTreeRegressor(max_depth=depth))
     return models
