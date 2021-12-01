@@ -93,8 +93,8 @@ def visualise_forecast_vs_true(
     plt.legend()
     plt.show()
 
-def forecast_plot(df,title,x_label):
-    df.plot.bar()
+def forecast_plot(df,title,x_label,log_scale: bool):
+    df.plot.bar(log=log_scale)
     plt.title(title)
     plt.ylabel("MSE")
     plt.xlabel(x_label)
