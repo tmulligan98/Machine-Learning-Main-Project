@@ -97,12 +97,9 @@ def visualise_forecast_vs_true(
     plt.title(f"{model_name} predicted traffic volume")
     plt.legend()
     plt.show()
-<<<<<<< HEAD
 
 def forecast_plot(df,title,x_label,log_scale: bool):
     df.plot.bar(log=log_scale)
     plt.title(title)
     plt.ylabel("MSE")
     plt.xlabel(x_label)
-=======
->>>>>>> master
