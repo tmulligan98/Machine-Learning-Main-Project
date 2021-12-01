@@ -254,13 +254,112 @@ def evaluate_random_forest_hyperparams(
     print(rf_grid_search.best_params_)
 
 
-def evaluate_ada_boost_hyperparams(X,y,params_grid):
-    ada_boost_model=AdaBoostRegressor()
-    
+def evaluate_ada_boost_hyperparams(X, y, params_grid):
+    ada_boost_model = AdaBoostRegressor()
 
     cv = TimeSeriesSplit(n_splits=5)
-    #grid_search = GridSearchCV(estimator=ada_boost_model, param_grid=params_grid, n_jobs=-1, cv=cv)
-    grid_search = RandomizedSearchCV(estimator=ada_boost_model,cv=cv,param_distributions=params_grid)
+    # grid_search = GridSearchCV(estimator=ada_boost_model, param_grid=params_grid, n_jobs=-1, cv=cv)
+    grid_search = RandomizedSearchCV(
+        estimator=ada_boost_model, cv=cv, param_distributions=params_grid
+    )
 
     grid_result = grid_search.fit(X, y)
-    print("best params: " +str(grid_result.best_params_))
+    print("best params: " + str(grid_result.best_params_))
+
+
+# ------------------K Nearest Neighbours------------------
+def gaussian_weighting(distances: np.array, gamma=20) -> float:
+    """
+    Take in a numpy array of distances between the input x point, and each training point.
+    Using this, compute the weights for each distance, then compute weighted mean.
+
+    Args:
+        distances : A numpy array of distances between the input x point
+
+    Returns:
+        A weighted mean of the computed gaussian weights
+
+    """
+    weights = np.exp(-gamma * (distances ** 2))
+    return weights / np.sum(weights)
+
+
+def evaluate_knn_k(X: np.array, y: np.array, test_params: List[Any]):
+    plt.rc("font", size=18)
+    plt.rcParams["figure.constrained_layout.use"] = True
+
+    cv = TimeSeriesSplit(n_splits=5)
+
+    mean_mse = []
+    std_mse = []
+
+    for k in test_params:
+
+        model = KNeighborsRegressor(n_neighbors=k, weights="distance")
+
+        metrics_named_tuple = cross_validation_model(X, y, model, cv)
+        mean_mse.append(np.array(metrics_named_tuple).mean())
+        std_mse.append(np.array(metrics_named_tuple).std())
+
+    plt.show()
+
+    plt.errorbar(test_params, mean_mse, yerr=std_mse)
+    plt.title(f"K-Nearest Neighbours Cross Validation for k")
+    plt.xlabel("Number of Neighbours (k)")
+    plt.ylabel("MSE")
+    plt.xlim((0, test_params[-1]))
+
+
+def evaluate_knn_gamma(X: np.array, y: np.array):
+    def gaussian_weighting_a(distances: np.array, gamma=200) -> float:
+        weights = np.exp(-gamma * (distances ** 2))
+        return weights / np.sum(weights)
+
+    def gaussian_weighting_b(distances: np.array, gamma=500) -> float:
+        weights = np.exp(-gamma * (distances ** 2))
+        return weights / np.sum(weights)
+
+    def gaussian_weighting_c(distances: np.array, gamma=1000) -> float:
+        weights = np.exp(-gamma * (distances ** 2))
+        return weights / np.sum(weights)
+
+    def gaussian_weighting_d(distances: np.array, gamma=5000) -> float:
+        weights = np.exp(-gamma * (distances ** 2))
+        return weights / np.sum(weights)
+
+    def gaussian_weighting_e(distances: np.array, gamma=10000) -> float:
+        weights = np.exp(-gamma * (distances ** 2))
+        return weights / np.sum(weights)
+
+    plt.rc("font", size=18)
+    plt.rcParams["figure.constrained_layout.use"] = True
+
+    cv = TimeSeriesSplit(n_splits=5)
+
+    gamma_range = [200, 500, 1000, 5000, 10000]
+    gaussian_range_functions = {
+        200: gaussian_weighting_a,
+        500: gaussian_weighting_b,
+        1000: gaussian_weighting_c,
+        5000: gaussian_weighting_d,
+        10000: gaussian_weighting_e,
+    }
+
+    mean_mse = []
+    std_mse = []
+
+    for g in gamma_range:
+
+        model = KNeighborsRegressor(n_neighbors=5, weights=gaussian_range_functions[g])
+
+        metrics_named_tuple = cross_validation_model(X, y, model, cv)
+        mean_mse.append(np.array(metrics_named_tuple).mean())
+        std_mse.append(np.array(metrics_named_tuple).std())
+
+    plt.show()
+
+    plt.errorbar(gamma_range, mean_mse, yerr=std_mse)
+    plt.title(f"K-Nearest Neighbours Cross Validation for k")
+    plt.xlabel("Number of Neighbours (k)")
+    plt.ylabel("MSE")
+    plt.xlim((0, gamma_range[-1]))
