@@ -148,6 +148,10 @@ def cross_validation_model(
     for train, test in cv.split(X):
         model.fit(X[train], y[train])
         ypred = model.predict(X[test])
+        # Check for nan values
+        array_sum = np.sum(ypred)
+        if np.isnan(array_sum):
+            print("Nan values located")
         temp_mse.append(mean_squared_error(y[test], ypred))
 
     return temp_mse
