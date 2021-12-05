@@ -124,7 +124,7 @@ def twleve_month_forecast(
 
     for month_index in range(11,-1,-1):
 
-        date_time_axis,lagged_points, y_north_temp, X_north_temp, X_north_val_temp, y_north_val_temp = one_month_data_prep(df_north, df_south, n_forecast, lag_range, month_index)
+        date_time_axis,lagged_points, y_north_temp, X_north_temp, X_north_val_temp, y_north_val_temp = one_month_forecasting_data_prep(df_north, df_south, n_forecast, lag_range, month_index)
         calc_test_and_validation_MSE(test_scores,val_month_scores,val_week_scores,model_name,model,X_north_temp,y_north_temp,X_north_val_temp,y_north_val_temp,n_forecast,lagged_points,month_index)
 
     return (test_scores,val_month_scores,val_week_scores)
@@ -132,7 +132,7 @@ def twleve_month_forecast(
 
 def visualise_month_forecast(model_list,month,df_north, df_south, n_forecast, lag_range):
     month_index = list(month_map.keys())[list(month_map.values()).index(month)]
-    date_time_axis,lagged_points, y_north_temp, X_north_temp, X_north_val_temp, y_north_val_temp=one_month_data_prep(df_north, df_south, n_forecast, lag_range, month_index)
+    date_time_axis,lagged_points, y_north_temp, X_north_temp, X_north_val_temp, y_north_val_temp=one_month_forecasting_data_prep(df_north, df_south, n_forecast, lag_range, month_index)
     
     #put this in a loop for each model
     y_forecast_north_temp = []
@@ -142,7 +142,7 @@ def visualise_month_forecast(model_list,month,df_north, df_south, n_forecast, la
     visualise_multiple_forecast_vs_true(date_time_axis,y_north_val_temp,y_forecast_north_temp,list(model_list.keys()))
 
 
-def one_month_data_prep(df_north, df_south, n_forecast, lag_range, month_index):
+def one_month_forecasting_data_prep(df_north, df_south, n_forecast, lag_range, month_index):
     df_north_temp=df_north.copy()
     df_south_temp=df_south.copy()
 
