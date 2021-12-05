@@ -76,7 +76,7 @@ def visualise_decision_tree(decision_tree_model, X, y):
 
 
 def visualise_forecast_vs_true(
-    X_test: np.array, y_test: np.array, y_forecast: np.array, model_name: str
+    X_test: np.array, y_test: np.array, y_forecast: np.array, model_name: str, baseline_y
 ):
     """
     Function to visualise forecasted traffic volumes against the true values
@@ -84,6 +84,7 @@ def visualise_forecast_vs_true(
         X_test : Numpy array of test feature vectors
         y_test : Numpy array of testing output features
         y_forecast : Numpy array of forecasted (predicted) output features
+        baseline_y : Numpy array of dummy (mean) predictions made as our baseline
     """
     # Plot the results
     plt.figure()
@@ -92,11 +93,13 @@ def visualise_forecast_vs_true(
         X_test, y_test, s=20, edgecolor="black", c="orange", label="Testing data"
     )
     plt.plot(X_test, y_forecast, color="blue", label="Forecasted data", linewidth=2)
+    plt.plot(X_test, baseline_y, color="red", label="(Mean) Baseline", linewidth=2)
     plt.xlabel("Hours")
     plt.ylabel("Traffic Volume")
     plt.title(f"{model_name} predicted traffic volume")
     plt.legend()
     plt.show()
+
 
 def visualise_multiple_forecast_vs_true(
     X_test: np.array, y_test: np.array, y_forecast_list, model_names: list
@@ -114,12 +117,9 @@ def visualise_multiple_forecast_vs_true(
     plt.scatter(
         X_test, y_test, s=20, edgecolor="black", c="orange", label="Testing data"
     )
-    
-    
-    for i in range(0,len(model_names)):
-        plt.plot(X_test, y_forecast_list[i], label=model_names[i], linewidth=2)
-    
 
+    for i in range(0, len(model_names)):
+        plt.plot(X_test, y_forecast_list[i], label=model_names[i], linewidth=2)
 
     plt.xlabel("Hours")
     plt.ylabel("Traffic Volume")
@@ -128,7 +128,7 @@ def visualise_multiple_forecast_vs_true(
     plt.show()
 
 
-def forecast_plot(df,title,x_label,log_scale: bool):
+def forecast_plot(df, title, x_label, log_scale: bool):
     df.plot.bar(log=log_scale)
     plt.title(title)
     plt.ylabel("MSE")
