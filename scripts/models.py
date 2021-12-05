@@ -90,20 +90,6 @@ def get_model_MSE(model,X,y):
 
     return np.sqrt(-np.mean(scores["test_score"]))
 
-month_map = {
-        0:"Dec",
-        1:"Nov",
-        2:"Oct",
-        3:"Sep",
-        4:"Aug",
-        5:"Jul",
-        6:"Jun",
-        7:"May",
-        8:"Apr",
-        9:"Mar",
-        10:"Feb",
-        11:"Jan"
-    }
 
 def calc_test_and_validation_MSE(test_scores,val_scores,val_week_scores,model_name,model,X,y,X_val,y_val,n_forecast,lagged_points,month_index):
     

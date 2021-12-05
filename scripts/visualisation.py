@@ -104,13 +104,7 @@ def visualise_forecast_vs_true(
 def visualise_multiple_forecast_vs_true(
     X_test: np.array, y_test: np.array, y_forecast_list, model_names: list
 ):
-    """
-    Function to visualise forecasted traffic volumes against the true values
-    Args:
-        X_test : Numpy array of test feature vectors
-        y_test : Numpy array of testing output features
-        y_forecast : Numpy array of forecasted (predicted) output features
-    """
+    
     # Plot the results
     plt.figure()
 
@@ -125,6 +119,7 @@ def visualise_multiple_forecast_vs_true(
     plt.ylabel("Traffic Volume")
     plt.title(f"Predicted traffic volume")
     plt.legend()
+    plt.ylim([-500,2500])
     plt.show()
 
 
