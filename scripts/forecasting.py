@@ -62,7 +62,7 @@ def n_one_step_ahead_prediction(
     # element of the test set!)
     y_predictions = []
     # Generate our initial lagged features
-    print(testX[0].shape)
+    
     ypred = one_step_ahead_prediction(trained_model, testX[0])
 
     y_predictions.append(ypred)
