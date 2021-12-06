@@ -21,6 +21,20 @@ import copy
 from utilities import train_test_split
 from visualisation import visualise_multiple_forecast_vs_true
 
+month_map = {
+        0:"Dec",
+        1:"Nov",
+        2:"Oct",
+        3:"Sep",
+        4:"Aug",
+        5:"Jul",
+        6:"Jun",
+        7:"May",
+        8:"Apr",
+        9:"Mar",
+        10:"Feb",
+        11:"Jan"
+    }
 
 def evaluate_lasso_hyperparams(X, y, test_params: List[Any]):
     """ """
@@ -86,33 +100,20 @@ def get_model_MSE(model,X,y):
             cv=cv,
             scoring="neg_mean_squared_error",
             return_estimator=True,
+            n_jobs=-1
         )
 
     return np.sqrt(-np.mean(scores["test_score"]))
 
-month_map = {
-        0:"Dec",
-        1:"Nov",
-        2:"Oct",
-        3:"Sep",
-        4:"Aug",
-        5:"Jul",
-        6:"Jun",
-        7:"May",
-        8:"Apr",
-        9:"Mar",
-        10:"Feb",
-        11:"Jan"
-    }
 
 def calc_test_and_validation_MSE(test_scores,val_scores,val_week_scores,model_name,model,X,y,X_val,y_val,n_forecast,lagged_points,month_index):
     
 
     model.fit(X,y)
-    test_scores[month_map.get(month_index)]=np.trunc(get_model_MSE(model,X,y))
+    test_scores[month_map.get(month_index)]=get_model_MSE(model,X,y)
     y_forecast_temp = n_one_step_ahead_prediction(model, X_val, n_forecast, lagged_points, relevant_lag_indexes=[0,1,2,3,4,5,11])
-    val_scores[month_map.get(month_index)]=np.trunc(mean_squared_error(y_val, y_forecast_temp))
-    val_week_scores[month_map.get(month_index)]=np.trunc(mean_squared_error(y_val[24*7:], y_forecast_temp[24*7:]))
+    val_scores[month_map.get(month_index)]=mean_squared_error(y_val, y_forecast_temp)
+    val_week_scores[month_map.get(month_index)]=mean_squared_error(y_val[24*7:], y_forecast_temp[24*7:])
 
 
 def twleve_month_forecast(
