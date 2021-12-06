@@ -122,7 +122,7 @@ def visualise_multiple_forecast_vs_true(
         plt.plot(X_test, y_forecast_list[i][24:num_points], label=model_names[i], linewidth=2,alpha=transparency)
 
     plt.xlabel("Hours")
-    plt.ylabel("Traffic Volume")
+    plt.ylabel("Normalised Traffic Volume")
     plt.title(f"Predicted traffic volume (Monday - Sunday)")
     plt.legend(bbox_to_anchor=(1, 1.05))
     plt.xlim([X_test[0],X_test[-1]])

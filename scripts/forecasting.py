@@ -42,6 +42,7 @@ def one_step_ahead_prediction(trained_model: Any, testX_single: np.array) -> int
 
     Returns:
     """
+
     ypred = trained_model.predict(np.array([testX_single]))
 
     # This will give us the prediction for one step ahead.
@@ -81,7 +82,7 @@ def n_one_step_ahead_prediction(
     return y_predictions
 
 
-if __name__ == "__main__":
+"""if __name__ == "__main__":
     # Get our dataframe
     df = load_dataframe()
 
@@ -123,7 +124,7 @@ if __name__ == "__main__":
     predictions = n_one_step_ahead_prediction(
         neighbors_model, X_north_val, 12, lagged_points, [0, 1, 2, 3, 4, 5, 11]
     )
-    print()
+    print()"""
 
     # Base features performance, where we use K Nearest Neighbors.
     # Here is our baseline, now we add features.
