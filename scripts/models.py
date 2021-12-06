@@ -100,6 +100,7 @@ def get_model_MSE(model,X,y):
             cv=cv,
             scoring="neg_mean_squared_error",
             return_estimator=True,
+            n_jobs=-1
         )
 
     return np.sqrt(-np.mean(scores["test_score"]))

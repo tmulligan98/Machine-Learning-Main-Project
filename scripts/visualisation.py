@@ -106,12 +106,12 @@ def visualise_multiple_forecast_vs_true(
 ):
     num_points=24*8
     X_test=X_test[24:num_points]
-  
-    print(X_test)
+    
+    
     # Plot the results
     plt.figure()
     plt.scatter(
-        X_test, y_test[24:num_points], s=20, edgecolor="black", c="orange", label="Testing data"
+        X_test, y_test[24:num_points]*6606, s=20, edgecolor="black", c="orange", label="Testing data"
     )
 
     for i in range(0, len(model_names)):
@@ -119,7 +119,7 @@ def visualise_multiple_forecast_vs_true(
         if model_names[i]=="Neural Net":
             transparency=0.5
 
-        plt.plot(X_test, y_forecast_list[i][24:num_points], label=model_names[i], linewidth=2,alpha=transparency)
+        plt.plot(X_test, y_forecast_list[i][24:num_points]*6606.0, label=model_names[i], linewidth=2,alpha=transparency)
 
     plt.xlabel("Hours")
     plt.ylabel("Traffic Volume")
