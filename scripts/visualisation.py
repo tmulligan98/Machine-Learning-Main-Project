@@ -15,6 +15,8 @@ def visualise_dataset(df):
     """
     red = "#b20710"
 
+    mpl.rcParams.update({'font.size': 22})
+
     fig, ax = plt.subplots(1, 1, figsize=(40, 10))
 
     lanes = ["northBound", "southBound"]
@@ -45,7 +47,7 @@ def visualise_features(
     """
 
     num_plots: int = len(feature_names)
-    fig, ax = plt.subplots(num_plots, 1, figsize=(20, num_plots * 5))
+    fig, ax = plt.subplots(num_plots, 1, figsize=(20, num_plots * 10))
 
     fig.suptitle(large_title, fontsize=30)
 
